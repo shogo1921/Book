@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AuthorMapper">
+
+  <resultMap id="author1"
+             type="com.example.domain.Author"
+             autoMapping="true">
+
+      <association property="detail"
+                   autoMapping="true"
+                   javaType="com.example.domain.AuthorDetail" />
+  </resultMap>
+
+  <resultMap id="author2"
+             type="com.example.domain.Author">
+      <!-- autoMappingにすると、tooManyResultExceptionが発生 -->
+      <result property="name" column="name"/>
+      <collection property="books"
+                  ofType="com.example.domain.Book"
+                  autoMapping="true" />
+  </resultMap>
+
+  <select id="findAll" resultMap="author1">
+    SELECT
+      authors.id, authors.name,
+      author_details.introduction,
+      author_details.born_at,
+      author_details.died_at
+    FROM authors
+    JOIN author_details
+    ON authors.id = author_details.id
+  </select>
+
+  <select id="findById" parameterType="int"
+          resultMap="author2">
+    SELECT
+      authors.name,
+      books.title,
+      books.publisher,
+      books.price
+    FROM authors
+        LEFT JOIN books
+    ON authors.id = books.author_id
+    WHERE authors.id = #{id}
+  </select>
+
+  <insert id="insert"
+          keyProperty="id"
+          useGeneratedKeys="true"
+          parameterType="com.example.domain.Author">
+    INSERT INTO authors (name)
+    VALUES (#{name})
+  </insert>
+
+  <insert id="insertDetail"
+          parameterType="com.example.domain.AuthorDetail">
+    INSERT INTO author_details
+    (id, introduction, born_at, died_at)
+    VALUES (#{id}, #{introduction}, #{bornAt}, #{diedAt})
+  </insert>
+
+</mapper>

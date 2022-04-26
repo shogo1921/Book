@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{parts::head('レビューリスト')}"></head>
+<body>
+<header th:replace="~{parts::header}"></header>
+<div class="container">
+	<h1>レビューリスト</h1>
+	<p><a th:href="@{/reviews/add}">レビューを書く</a></p>
+	<table class="table table-striped">
+	  <tr>
+	    <th>タイトル</th>
+	    <th>スコア</th>
+	    <th>コメント</th>
+	    <th>評者</th>
+	  </tr>
+	  <tr th:each="review: ${reviews}" th:object="${review}">
+	    <td th:text="*{book.title}"></td>
+	    <td th:text="*{score}"></td>
+	    <td th:text="*{comment}"></td>
+	    <td th:text="*{reviewer.name}"></td>
+	  </tr>
+	</table>
+</div>
+</body>
+</html>
